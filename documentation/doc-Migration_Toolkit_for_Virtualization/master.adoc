@@ -20,7 +20,7 @@ endif::[]
 [id="about-mtv_{context}"]
 == About {the-lc} {project-full}
 
-{the} {project-first} enables you to migrate virtual machines from VMware vSphere to {virt}, an add-on to {ocp} {ocp-version}. With {virt}, you can run and manage virtual machine workloads alongside container workloads.
+{the} {project-first} enables you to migrate virtual machines from VMware vSphere or {rhv-full} to {virt}, an add-on to {ocp} {ocp-version}. With {virt}, you can run and manage virtual machine workloads alongside container workloads.
 
 include::modules/mtv-resources-and-services.adoc[leveloffset=+2]
 include::modules/mtv-workflow.adoc[leveloffset=+2]
@@ -42,6 +42,8 @@ After you have installed {project-short}, you must create a VMware Virtual Disk 
 === Installing the {operator-name}
 
 You can install the {operator-name} by using the {ocp} web console or the command line interface (CLI).
+
+If your source provider is VMware vSphere, you must create a VMware Virtual Disk Development Kit image and add it to a {virt} config map.
 
 :context: web
 :web:
@@ -67,7 +69,7 @@ include::modules/adding-vddk-to-mtv.adoc[leveloffset=+2]
 
 You can migrate virtual machines (VMs) to {virt} by using the {project-short} web console or the command line interface (CLI).
 
-You can run a cold or a warm migration. For details, see xref:warm-migration.adoc#warm-migration_{context}[Warm migration].
+{project-short} supports warm migration for VMware and cold migration for VMware and . For details, see xref:warm-migration.adoc#warm-migration_{context}[Warm migration].
 
 include::modules/migration-environment-requirements.adoc[leveloffset=+2]
 include::modules/increasing-esxi-nfc-service-memory.adoc[leveloffset=+3]
@@ -80,11 +82,20 @@ You can migrate virtual machines to {virt} by using the {project-short} web cons
 [id="adding-providers_{context}"]
 ==== Adding providers
 
-You can add VMware and {virt} providers by using the {project-short} web console.
+You can add providers by using the {project-short} web console.
 
+:mtv!:
+:context: vmware
+:vmware:
 include::modules/adding-source-provider.adoc[leveloffset=+4]
+:vmware!:
+:context: rhv
+:rhv:
+include::modules/adding-source-provider.adoc[leveloffset=+4]
+:rhv:
 [discrete]
 include::modules/selecting-migration-network-for-source-provider.adoc[leveloffset=+4]
+
 include::modules/adding-virt-provider.adoc[leveloffset=+4]
 [discrete]
 include::modules/selecting-migration-network-for-virt-provider.adoc[leveloffset=+4]

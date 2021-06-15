@@ -3,20 +3,29 @@
 // * documentation/doc-Migration_Toolkit_for_Virtualization/master.adoc
 
 [id="adding-source-provider_{context}"]
+ifdef::vmware[]
 = Adding a VMware source provider
 
 You can add a VMware source provider by using the {project-short} web console.
+endif::[]
+ifdef::rhv[]
+= Adding {a-rhv} source provider
+
+You can add {a-rhv} source provider by using the {project-short} web console.
+endif::[]
 
 .Procedure
 
 . In the {project-short} web console, click *Providers*.
 . Click *Add provider*.
+
+ifdef::vmware[]
 . Select *VMware* from the *Type* list.
 . Fill in the following fields:
 
 * *Name*: Name to display in the list of providers
 * *Hostname or IP address*: vCenter host name or IP address
-* *Username*: vCenter admin user name, for example, `administrator@vsphere.local`
+* *Username*: vCenter admin user, for example, `administrator@vsphere.local`
 * *Password*: vCenter admin password
 * *SHA-1 fingerprint*: vCenter SHA-1 fingerprint
 +
@@ -30,7 +39,18 @@ $ openssl s_client \
     | cut -d '=' -f 2
 ----
 <1> Specify the vCenter host name.
+endif::[]
+ifdef::rhv[]
+. Select *Red Hat Virtualization* from the *Type* list.
+. Fill in the following fields:
+
+* *Name*: Name to display in the list of providers
+* *Hostname or IP address*: {manager} host name or IP address
+* *Username*: {manager} user
+* *Password*: {manager} password
+* *CA certificate*: CA certificate of the {manager}. You can retrieve it at `https://<www.example.com>/ovirt-engine/services/pki-resource?resource=ca-certificate&format=X509-PEM-CA`.
+endif::[]
 
 . Click *Add* to add and save the provider.
 +
-The VMware provider appears in the list of providers.
+The source provider appears in the list of providers.

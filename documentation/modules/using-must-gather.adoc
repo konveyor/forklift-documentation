@@ -24,11 +24,26 @@ You can also collect and view link:https://docs.openshift.com/container-platform
 $ oc adm must-gather --image={must-gather}
 ----
 
-. Optional: Run the `oc adm must-gather` command with the `gather_metrics_dump` script to collect Prometheus metrics from the previous day:
+. To collect a subset of the `must-gather` data, run the `oc adm must-gather` command with an option:
 +
 [source,terminal,subs="attributes+"]
 ----
-$ oc adm must-gather --image={must-gather} -- /usr/bin/gather_metrics_dump
+$ oc adm must-gather --image={must-gather} \
+  -- <option>=<value> /usr/bin/targeted <1>
+----
+<1> Specify one of the following options and values:
+* `NS=<namespace>`: Specify the namespace.
+* `PLAN=<migration_plan>`: Specify the name of the migration plan CR.
+* `VM=<vm_id>`: Specify the virtual machine ID in the migration plan CR.
+
+. To collect Prometheus metrics data from the previous day:
+
+.. Run the `oc adm must-gather` command with the `gather_metrics_dump` script:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc adm must-gather --image={must-gather} \
+  -- /usr/bin/gather_metrics_dump
 ----
 +
 [NOTE]

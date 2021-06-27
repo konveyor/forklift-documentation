@@ -1,0 +1,20 @@
+// Module included in the following assemblies:
+//
+// * documentation/doc-Migration_Toolkit_for_Virtualization/master.adoc
+
+[id="vmware-privileges_{context}"]
+= VMware privileges
+
+The following VMware privileges are required to migrate virtual machines to {project-first}.
+
+[cols="2,2,1", options="header"]
+.VMware privileges
+|===
+|Privilege |Description |Required on
+|`Datastore.Browse datastore` |Allows browsing files on a datastore |Data stores
+|`Datastore.Low level file operations` |Allows performing read, write, delete, and rename operations in the datastore browser.  |Data stores
+|`Sessions.Validate session`   |Allow verification of session validity.   |Root vCenter Server
+|`Virtual machine.Interaction.Guest operating system management by VIX API`   |Allows management of the virtual machine's operating system through the VIX API.   |Virtual machines
+|`Virtual machine.Provisioning.Allow disk access`   |Allows opening a disk on a virtual machine for random read and write access. Used mostly for remote disk mounting.   |Virtual machines
+|`Virtual machine.Provisioning.Allow read-only disk access`   |Allows opening a disk on a virtual machine for random read access. Used mostly for remote disk mounting.   |Virtual machines
+|===

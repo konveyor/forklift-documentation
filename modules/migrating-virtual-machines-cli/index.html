@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+    
+    <title>Forklift Documentation</title>
+    <!-- # Opengraph protocol properties: https://ogp.me/ -->
+    <meta name="author" content="Forklift documentation team" >
+    <meta property="og:type" content="article" >
+    <meta name="twitter:card" content="summary">
+    <meta name="keywords" content="" >
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="">
+    <meta property="og:article:author" content="Forklift documentation team" >
+    <meta property="og:article:published_time" content="2021-07-21 19:18:55 -0500" >
+    <meta name="twitter:title" content="Forklift Documentation">
+    <meta name="twitter:description" content="Migrating VMware virtual machines to KubeVirt">
+
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Forklift Documentation | Migrating VMware virtual machines to KubeVirt</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Forklift Documentation" />
+<meta name="author" content="Forklift documentation team" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Migrating VMware virtual machines to KubeVirt" />
+<meta property="og:description" content="Migrating VMware virtual machines to KubeVirt" />
+<meta property="og:site_name" content="Forklift Documentation" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Forklift Documentation" />
+<meta name="twitter:site" content="@konveyor_io" />
+<meta name="twitter:creator" content="@Forklift documentation team" />
+<script type="application/ld+json">
+{"url":"/modules/migrating-virtual-machines-cli/","author":{"@type":"Person","name":"Forklift documentation team"},"@type":"WebPage","description":"Migrating VMware virtual machines to KubeVirt","headline":"Forklift Documentation","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/assets/img/forklift-logo-darkbg.svg"},"name":"Forklift documentation team"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5eabcc840d13bfde907c6944584cd7b5bdfca94d">
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+  </head>
+  <body>
+    <header class="page-header">
+        
+          <a href="/"><img src="/assets/img/forklift-logo-darkbg.svg" alt="Forklift Documentation" width="200" /></a><br>
+        
+      
+        <a href="https://github.com/konveyor/forklift-documentation" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="migrating-virtual-machines-cli_forklift">Migrating virtual machines from the command line interface</h1>
+<div class="paragraph">
+<p>You can migrate virtual machines (VMs) from the command line (CLI) by creating the following custom resources (CRs):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Secret</code> contains the VMware provider credentials.</p>
+</li>
+<li>
+<p><code>Provider</code> contains the VMware provider details.</p>
+</li>
+<li>
+<p><code>Host</code> contains the VMware host details.</p>
+</li>
+<li>
+<p><code>NetworkMap</code> maps the source and destination networks.</p>
+</li>
+<li>
+<p><code>StorageMap</code> maps the source and destination storage.</p>
+</li>
+<li>
+<p><code>Plan</code> contains a list of VMs to migrate and specifies whether the migration is cold or warm. The <code>Plan</code> references the providers and maps.</p>
+</li>
+<li>
+<p><code>Migration</code> runs the <code>Plan</code>. If the migration is warm, it specifies the cutover time.</p>
+<div class="paragraph">
+<p>You can associate multiple <code>Migration</code> CRs with a single <code>Plan</code> CR. If a migration does not complete, you can create a new <code>Migration</code> CR, without changing the <code>Plan</code> CR, to migrate the remaining VMs.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The term <em>destination</em> in the API is the same as <em>target</em> in the web console.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You must specify a name for cluster-scoped CRs.</p>
+</div>
+<div class="paragraph">
+<p>You must specify both a name and a namespace for namespace-scoped CRs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You must be logged in as a user with <code>cluster-admin</code> privileges.</p>
+</li>
+<li>
+<p>The <a href="https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/getting-started-cli.html">OpenShift CLI</a> must be installed.</p>
+</li>
+<li>
+<p>If you are mapping more than one source and destination network, you must create a <a href="https://docs.openshift.com/container-platform/4.7/virt/virtual_machines/vm_networking/virt-attaching-vm-multiple-networks.html#virt-creating-network-attachment-definition">network attachment definition</a> for each additional destination network.</p>
+</li>
+<li>
+<p>You must add the VDDK image to the <code>spec.vddkInitImage</code> field of the <code>HyperConverged</code> custom resource (CR).</p>
+</li>
+<li>
+<p>If you are performing a warm migration, you must enable <a href="https://kb.vmware.com/s/article/1020128">changed block tracking (CBT)</a> on the VMs and on the VM disks.</p>
+</li>
+<li>
+<p>If you are performing more than 10 concurrent migrations from a single ESXi host, you must increase the NFC service memory of the host.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Obtain the vCenter SHA-1 fingerprint:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-terminal" data-lang="terminal">$ openssl s_client \
+    -connect &lt;www.example.com&gt;:443 \ <b class="conum">(1)</b>
+    &lt; /dev/null 2&gt;/dev/null \
+    | openssl x509 -fingerprint -noout -in /dev/stdin \
+    | cut -d '=' -f 2</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the vCenter name.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">Example output</div>
+<div class="content">
+<pre class="highlight"><code class="language-terminal" data-lang="terminal">01:23:45:67:89:AB:CD:EF:01:23:45:67:89:AB:CD:EF:01:23:45:67</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a <code>Secret</code> CR manifest for the VMware provider:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: &lt;vmware_secret&gt;
+  namespace: konveyor-forklift
+type: Opaque
+stringData:
+  user: &lt;vcenter_user&gt; <b class="conum">(1)</b>
+  password: &lt;vcenter_password&gt; <b class="conum">(2)</b>
+  thumbprint: &lt;vcenter_fingerprint&gt; <b class="conum">(3)</b>
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the vCenter administrator account, for example, <code>administrator@vsphere.local</code>.</p>
+</li>
+<li>
+<p>Specify the vCenter password.</p>
+</li>
+<li>
+<p>Specify the vCenter SHA-1 fingerprint.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>Provider</code> CR manifest for the VMware provider:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Provider
+metadata:
+  name: &lt;vmware_provider&gt;
+  namespace: konveyor-forklift
+spec:
+  type: vsphere
+  url: &lt;api_end_point&gt; <b class="conum">(1)</b>
+  secret:
+    name: &lt;vmware_secret&gt; <b class="conum">(2)</b>
+    namespace: konveyor-forklift
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the vSphere API end point, for example, <code><a href="https://&lt;vcenter.host.com&gt;/sdk" class="bare">https://&lt;vcenter.host.com&gt;/sdk</a></code>.</p>
+</li>
+<li>
+<p>Specify the name of the VMware <code>Secret</code> CR.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>Host</code> CR manifest for the VMware host:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Host
+metadata:
+  name: &lt;vmware_host&gt;
+  namespace: konveyor-forklift
+spec:
+  provider:
+    namespace: konveyor-forklift
+    name: &lt;source_provider&gt; <b class="conum">(1)</b>
+  id: &lt;source_host_mor&gt; <b class="conum">(2)</b>
+  ipAddress: &lt;source_network_ip&gt; <b class="conum">(3)</b>
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the name of the VMware <code>Provider</code> CR.</p>
+</li>
+<li>
+<p>Specify the <em>managed object reference</em> of the VMware host.</p>
+</li>
+<li>
+<p>Specify the IP address of the VMware migration network.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>NetworkMap</code> CR manifest to map the source and destination networks:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$  cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: NetworkMap
+metadata:
+  name: &lt;network_map&gt;
+  namespace: konveyor-forklift
+spec:
+  map:
+    - destination:
+        type: pod <b class="conum">(1)</b>
+      source:
+        id: &lt;source_network_mor&gt; <b class="conum">(2)</b>
+    - destination:
+        type: multus
+        name: &lt;network_attachment_definition&gt; <b class="conum">(3)</b>
+        namespace: &lt;network_attachment_definition_namespace&gt; <b class="conum">(4)</b>
+      source:
+        id: &lt;source_network_mor&gt;
+  provider:
+    source:
+      name: &lt;vmware_provider&gt;
+      namespace: konveyor-forklift
+    destination:
+      name: &lt;destination_cluster&gt;
+      namespace: konveyor-forklift
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Allowed values are <code>pod</code> and <code>multus</code>.</p>
+</li>
+<li>
+<p>Specify the managed object reference of the VMware network.</p>
+</li>
+<li>
+<p>Specify the network attachment definition for each additional destination network.</p>
+</li>
+<li>
+<p>Specify the namespace of the network attachment definition.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>StorageMap</code> CR manifest:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: StorageMap
+metadata:
+  name: &lt;storage_map&gt;
+  namespace: konveyor-forklift
+spec:
+  map:
+    - destination:
+        storageClass: &lt;storage_class&gt;
+      source:
+        id: &lt;source_datastore_mor&gt; <b class="conum">(1)</b>
+  provider:
+    source:
+      name: &lt;vmware_provider&gt;
+      namespace: konveyor-forklift
+    destination:
+      name: &lt;destination_cluster&gt;
+      namespace: konveyor-forklift
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the managed object reference of the VMware data storage.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>Plan</code> CR manifest for the migration:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Plan
+metadata:
+  name: &lt;plan&gt; <b class="conum">(1)</b>
+  namespace: konveyor-forklift
+spec:
+  provider:
+    source:
+      name: &lt;vmware_provider&gt;
+      namespace: konveyor-forklift
+    destination:
+      name: &lt;destination_cluster&gt;
+      namespace: konveyor-forklift
+  warm: true <b class="conum">(2)</b>
+  map:
+    network: <b class="conum">(3)</b>
+      name: &lt;network_map&gt; <b class="conum">(4)</b>
+      namespace: konveyor-forklift
+    storage:
+      name: &lt;storage_map&gt; <b class="conum">(5)</b>
+      namespace: konveyor-forklift
+  targetNamespace: konveyor-forklift
+  vms: <b class="conum">(6)</b>
+    - id: &lt;source_vm_mor&gt; <b class="conum">(7)</b>
+    - name: &lt;source_vm&gt;
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the name of the <code>Plan</code> CR.</p>
+</li>
+<li>
+<p>Specify whether the migration is warm or cold. If you specify a warm migration without specifying a value for the <code>cutover</code> parameter in the <code>Migration</code> CR manifest, only the precopy stage will run.</p>
+</li>
+<li>
+<p>You can create multiple network mappings for source and destination networks.</p>
+</li>
+<li>
+<p>Specify the name of the <code>NetworkMap</code> CR.</p>
+</li>
+<li>
+<p>Specify the name of the <code>StorageMap</code> CR.</p>
+</li>
+<li>
+<p>You can use either the <code>id</code> <em>or</em> the <code>name</code> parameter to specify the source VMs.</p>
+</li>
+<li>
+<p>Specify the managed object reference of the VMware VM.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Optional: To change the time interval between the CBT snapshots for warm migration, patch the <code>vm-import-controller-config</code> config map:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-terminal" data-lang="terminal">$ oc patch configmap/vm-import-controller-config \
+  -n openshift-cnv -p '{"data": \
+  {"warmImport.intervalMinutes": "&lt;interval&gt;"}}' <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the time interval in minutes. The default value is <code>60</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a <code>Migration</code> CR manifest to run the <code>Plan</code> CR:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">$ cat &lt;&lt; EOF | oc apply -f -
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Migration
+metadata:
+  name: &lt;migration&gt; <b class="conum">(1)</b>
+  namespace: konveyor-forklift
+spec:
+  plan:
+    name: &lt;plan&gt; <b class="conum">(2)</b>
+    namespace: konveyor-forklift
+  cutover: &lt;cutover_time&gt; <b class="conum">(3)</b>
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specify the name of the <code>Migration</code> CR.</p>
+</li>
+<li>
+<p>Specify the name of the <code>Plan</code> CR that you are running. The <code>Migration</code> CR creates a <code>VirtualMachineImport</code> CR for each VM that is migrated.</p>
+</li>
+<li>
+<p>Optional: Specify a cutover time according to the ISO 8601 format with the UTC time offset, for example, <code>2021-04-04T01:23:45.678+09:00</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>View the <code>VirtualMachineImport</code> pods to monitor the progress of the migration:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-terminal" data-lang="terminal">$ oc get pods -n konveyor-forklift</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><p align="center"><a href="https://github.com/konveyor/forklift-documentation">forklift-documentation</a> is maintained by <a href="https://github.com/konveyor">konveyor</a>.</p></span>
+        
+      </footer>
+    </main>
+  </body>
+</html>

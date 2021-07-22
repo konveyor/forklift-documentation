@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+    
+    <title>Release notes | Forklift Documentation</title>
+    <!-- # Opengraph protocol properties: https://ogp.me/ -->
+    <meta name="author" content="Forklift documentation team" >
+    <meta property="og:type" content="article" >
+    <meta name="twitter:card" content="summary">
+    <meta name="keywords" content="" >
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="">
+    <meta property="og:article:author" content="Forklift documentation team" >
+    <meta property="og:article:published_time" content="2021-07-21 19:18:55 -0500" >
+    <meta name="twitter:title" content="Release notes | Forklift Documentation">
+    <meta name="twitter:description" content="Migrating VMware virtual machines to KubeVirt">
+
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Release notes | Forklift Documentation</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Release notes" />
+<meta name="author" content="Forklift documentation team" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Migrating VMware virtual machines to KubeVirt" />
+<meta property="og:description" content="Migrating VMware virtual machines to KubeVirt" />
+<meta property="og:site_name" content="Forklift Documentation" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Release notes" />
+<meta name="twitter:site" content="@konveyor_io" />
+<meta name="twitter:creator" content="@Forklift documentation team" />
+<script type="application/ld+json">
+{"url":"/documentation/doc-Release_notes/master/","author":{"@type":"Person","name":"Forklift documentation team"},"@type":"WebPage","description":"Migrating VMware virtual machines to KubeVirt","headline":"Release notes","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/assets/img/forklift-logo-darkbg.svg"},"name":"Forklift documentation team"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5eabcc840d13bfde907c6944584cd7b5bdfca94d">
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+  </head>
+  <body>
+    <header class="page-header">
+        
+          <a href="/"><img src="/assets/img/forklift-logo-darkbg.svg" alt="Forklift Documentation" width="200" /></a><br>
+        
+      
+        <a href="https://github.com/konveyor/forklift-documentation" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="Release notes_forklift">Release notes</h1>
+<div class="sect1">
+<h2 id="forklift-2-1-release-notes">Forklift 2.1 release notes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p> Forklift enables you to migrate virtual machines from VMware vSphere to KubeVirt, an add-on to OKD 4.7. With KubeVirt, you can manage virtual machine workloads alongside container workloads.</p>
+</div>
+<div class="paragraph">
+<p>This document describes new features and enhancements, known issues, and resolved issues for  Forklift 2.1.</p>
+</div>
+<div class="sect2">
+<h3 id="new-features-and-enhancements_forklift">New features and enhancements</h3>
+<div class="paragraph">
+<p>This release adds the following features and improvements.</p>
+</div>
+<div class="sect3">
+<h4 id="warm-migration_forklift">Warm migration</h4>
+<div class="paragraph">
+<p>Warm migration reduces downtime by copying most of the VM data during a precopy stage while the VMs are running. During the cutover stage, the VMs are stopped and the rest of the data is copied.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cancel-migration_forklift">Cancel migration</h4>
+<div class="paragraph">
+<p>You can cancel an entire migration plan or individual VMs while a migration is in progress. A canceled migration plan can be restarted in order to migrate the remaining VMs.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="select-migration-network_forklift">Migration network</h4>
+<div class="paragraph">
+<p>You can select a migration network for the source and target providers for improved performance. By default, data is copied using the VMware administration network and the OKD pod network.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="validation-service_forklift">Validation service</h4>
+<div class="paragraph">
+<p>The validation service checks source VMs for issues that might affect migration and flags the VMs with concerns in the migration plan.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><p align="center"><a href="https://github.com/konveyor/forklift-documentation">forklift-documentation</a> is maintained by <a href="https://github.com/konveyor">konveyor</a>.</p></span>
+        
+      </footer>
+    </main>
+  </body>
+</html>
